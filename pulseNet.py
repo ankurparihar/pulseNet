@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 class pulseNet():
 	def __init__(self, pos_lim=150, neg_lim=-150, pulse_len=4):
@@ -47,7 +48,7 @@ class pulseNet():
 					small_Y.append(over*2 + 0)
 				else:
 					small_Y.append(over*2 + 1)
-				Y.append(small_Y)
+			Y.append(small_Y)
 		# return Y
 		self.Y = Y
 
@@ -56,18 +57,20 @@ class pulseNet():
 		"""
 		Initialize matrix
 		"""
-		side = self.categories ** self.pulse_len
+		side = int(math.sqrt(self.categories) ** self.pulse_len)
 		self.matrix = np.zeros(shape=(side, side))
 		self.side = side
 
 
-	def pulse_to_matrix(self):
+	def pulses_to_matrix(self):
 		"""
-		Return numpy 2d matrix with pulse plots
+		Return list of numpy 2d matrix with pulse plots
 		"""
-		self.init_mat()
 		Y = self.Y
+		self.final_mat = []
+		divisor = math.sqrt(self.categories)
 		for i in range(len(Y)):
+			self.init_mat()
 			for j in range(len(Y[0])-self.pulse_len+1):
 				side = self.side / 2
 				row = 0
@@ -76,6 +79,7 @@ class pulseNet():
 					# start coord of ith row is j+k
 					row += (Y[i][j+k] //2) * side
 					col += (Y[i][j+k] % 2) * side
-					side = side // self.categories
-				self.matrix[row][col] += 1
-		return self.matrix
+					side = side // divisor
+				self.matrix[int(row)][int(col)] += 1
+			self.final_mat.append(self.matrix)
+		return self.final_mat
