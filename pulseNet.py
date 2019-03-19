@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 class pulseNet():
 	def __init__(self, pos_lim=150, neg_lim=-150, pulse_len=4):
