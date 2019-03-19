@@ -12,10 +12,10 @@ class pulseNet():
 			######################################
 			        Category Specification
 			        ----------------------
-			        1: + Under Limit
-			        2: - Under Limit
-			        3: +  Over Limit
-			        4: -  Over Limit
+			        0: + Under Limit
+			        1: - Under Limit
+			        2: +  Over Limit
+			        3: -  Over Limit
 			######################################
 		"""
 		# self.matrix = []
