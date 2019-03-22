@@ -122,4 +122,4 @@ class pulseNet():
 			img = Image.fromarray(data, 'RGB')
 			img.save(k_dir, quality=100)
 			if(k%500==0):
-				print("Saving: {}".format(k))
+				print("Saving: {}".format(k+500))
