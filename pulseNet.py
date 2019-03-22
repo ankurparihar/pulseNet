@@ -1,5 +1,10 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import math
+import random
+import sys
+import os
+from PIL import Image
 
 class pulseNet():
 	def __init__(self, pos_lim=150, neg_lim=-150, pulse_len=4):
@@ -58,7 +63,7 @@ class pulseNet():
 		Initialize matrix
 		"""
 		side = int(math.sqrt(self.categories) ** self.pulse_len)
-		self.matrix = np.zeros(shape=(side, side))
+		self.matrix = np.zeros(shape=(side, side), dtype=np.int32)
 		self.side = side
 
 
@@ -83,3 +88,38 @@ class pulseNet():
 				self.matrix[int(row)][int(col)] += 1
 			self.final_mat.append(self.matrix)
 		return self.final_mat
+
+
+	def plot_matrix(self,matrix):
+		plt.imshow(np.asarray(matrix, dtype=float))
+		plt.colorbar()
+		plt.show()
+	
+	def plot_random_matrix(self, mat_list, y, count=1):
+		if(count<1):
+			return
+		row = random.randint(0,len(mat_list)-1)
+		mat = mat_list[row]
+		self.plot_matrix(mat)
+		print(row,y[row])
+		self.plot_random_matrix(mat_list, y, count-1)
+
+	def export_jpgs(self, matrix, y, out_dir='exports'):
+		if not os.path.exists(out_dir):
+  			os.mkdir(out_dir)
+		categories = list(set(y))
+		for cat in categories:
+			cat_dir = out_dir + '/' + str(cat)
+			if not os.path.exists(cat_dir):
+				os.mkdir(cat_dir)
+		for k in range(len(matrix)):
+			k_dir = out_dir + '/' + str(y[k]) + '/' + str(k) + '.jpg'
+			data = np.zeros((self.side, self.side, 3), dtype=np.uint32)
+			for i in range(self.side):
+				for j in range(self.side):
+					color = matrix[k,i,j]
+					data[i,j] = [color, color, color]
+			img = Image.fromarray(data, 'RGB')
+			img.save(k_dir, quality=100)
+			if(k%500==0):
+				print("Saving: {}".format(k))
